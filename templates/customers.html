@@ -1,0 +1,122 @@
+<h3 class="panel">Customers</h3>
+<div class="row">
+    <div class="col-sm-2">
+        <ul ng-init="customersTab=2" class="nav nav-pills nav-stacked nav-primary">  
+            <li ng-class="{active:customersTab===2}"><a href="#" ng-click="customersTab=2">View Customers</a></li>
+            <li ng-class="{active:customersTab===1}"><a href="#" ng-click="customersTab=1" >Add Customers</a></li>
+            
+        </ul>                             
+    </div>
+    <div class="col-sm-10">
+        <div class="panel panel-primary" ng-show="customersTab===1">                          
+            <div class="panel-heading "><h4> New Customers</h4>
+            </div>
+            <div class="panel-body">
+                <form class="form-horizontal" role="form" name="customerForm">
+                    <div class="form-group">
+                        <label class="control-label col-sm-3" for="customer-id">Customer Id:</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" id="customer-id" placeholder="Customer Id" ng-model="newCustomer.Id" ng-keyup="checkCustomer(newCustomer.Id)" ng-required="true"  >
+                            <div ng-show="messageCustExist" class="alert alert-danger">
+                                <strong>Exists!</strong> Customer already exist, Please give different id. <a href ng-click="editCustomer(newCustomer.Id)"> Click Here </a>to edit existing
+                            </div>                            
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-sm-3" for="customer-name">Name:</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" id="customer-name" placeholder="Customer Name" ng-model="newCustomer.Name" ng-disabled="messageCustExist">  
+                        </div>
+                    </div>
+                    <div class="form-group">  
+                        <label class="control-label col-sm-3" for="customer-shop">Shop:</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" id="customer-shop" placeholder="Shop" ng-model="newCustomer.Address.ShopName" ng-disabled="messageCustExist">  
+                        </div>
+                    </div>
+                    <div class="form-group">  
+                        <label class="control-label col-sm-3" for="customer-line1">Address Line1:</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" id="customer-line1" placeholder="Address Line1" ng-model="newCustomer.Address.Line1" ng-disabled="messageCustExist">  
+                        </div>
+                    </div>
+                    <div class="form-group">  
+                        <label class="control-label col-sm-3" for="customer-line2">Address Line2:</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" id="customer-line2" placeholder="Address Line2" ng-model="newCustomer.Address.Line2" ng-disabled="messageCustExist">  
+                        </div>
+                    </div>
+                    <div class="form-group">  
+                        <label class="control-label col-sm-3" for="customer-place">Place/City:</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" id="customer-place" placeholder="Place/City" ng-model="newCustomer.Address.Place" ng-disabled="messageCustExist">  
+                        </div>
+                    </div>
+                    <div class="form-group">  
+                        <label class="control-label col-sm-3" for="customer-pin">Pin:</label>
+                        <div class="col-sm-9">
+                            <input type="number" class="form-control" id="customer-pin" placeholder="Pin" ng-model="newCustomer.Address.Pin" ng-disabled="messageCustExist">  
+                        </div>
+                    </div>
+                    <div class="form-group">  
+                        <label class="control-label col-sm-3" for="customer-phone">Phone:</label>
+                        <div class="col-sm-9">
+                            <input type="number" class="form-control" id="customer-phone" placeholder="Phone" ng-model="newCustomer.Phone" ng-disabled="messageCustExist">  
+                        </div>
+                    </div>
+                    <div class="form-group">  
+                        <label class="control-label col-sm-3" for="customer-credit">Initial Credit:</label>
+                        <div class="col-sm-9">
+                            <input type="number" class="form-control" id="customer-credit" placeholder="Initial Credit" ng-model="newCustomer.InitialCredit" ng-disabled="messageCustExist">  
+                        </div>
+                    </div>
+                    <div class="form-group">  
+                        <div class="col-sm-offset-3 col-sm-9">
+                            <button class="btn btn-primary" ng-click="customerForm.$valid && addNewCustomer()" ng-disabled="messageCustExist">ADD CUSTOMER</button>
+                        </div>
+                    </div>
+                </form>
+            </div>   
+        </div>
+        <div class="panel panel-primary" ng-show="customersTab===2">
+            <div class="panel-heading"><h4>All Customers</h4></div>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Customer Id</th>
+                        <th>Customer Name</th>
+                        <th>Shop</th>
+                        <th>Place</th>
+                        <th>Phone</th>
+                        <th>Total Sales</th>
+                        <th>Paid Amount</th>
+                        <th>Balance Credit</th>
+                    </tr>
+                    </thead>
+                <tbody>
+                    <tr ng-repeat="customer in customers track by $index">
+                        <td>{{customer.Id}}</td>
+                        <td>{{customer.Name}}</td>
+                        <td>{{customer.Address.ShopName}}</td>
+                        <td>{{customer.Address.Place}}</td>
+                        <td>{{customer.Phone}}</td>
+                        <td>{{getTotalCustSales(customer.Id)|currency:'&#8377;'}}</td>
+                        <td>{{getTotalCustPaid(customer.Id)|currency:'&#8377;'}}</td>
+                        <td><strong>{{getBalanceCustCredit(customer.Id,customer.InitialCredit)|currency:'&#8377;'}}</strong></td>
+                    </tr>
+                    <tr>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th><h4>Total</h4></th>
+                        <th><h4>{{getTotalSalesPurchase("sales")|currency:'&#8377;'}}</h4></th>
+                        <th><h4>{{getTotalPaid("customers")|currency:'&#8377;'}}</h4></th>
+                        <th><h4>{{getTotalBalanceCredit("customers")|currency:'&#8377;'}}</h4></th>
+                    </tr>
+                
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

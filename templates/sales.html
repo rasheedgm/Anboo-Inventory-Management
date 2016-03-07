@@ -1,0 +1,111 @@
+<h3 class="panel">Sales</h3>
+<div class="row">
+    <div class="col-sm-2">
+        <ul ng-init="salesTab=1" class="nav nav-pills nav-stacked nav-primary">  
+            <li ng-class="{active:salesTab===1}"><a href="#" ng-click="salesTab=1" >Add Sales</a></li>
+            <li ng-class="{active:salesTab===2}"><a href="#" ng-click="salesTab=2">View Sales</a></li>
+        </ul>                             
+    </div>
+    <div class="col-sm-10">
+        <div class="panel panel-primary" ng-show="salesTab===1">                          
+            <div class="panel-heading "><h4> New Sales</h4>
+            </div>
+            <form name="salesForm" onsubmit="return false;">
+            <div class="panel-body ">
+                <div class="form form-inline" >
+                    <label>Date:</label>
+                    <input type="date" ng-model="newSales.Date" id=date-input class="form-control">
+                    <label>Customer Id:</label>
+                    <input id ="customer-id" name="custId" type=text ng-model="newSales.Customer" class="form-control" ng-keyup="currentCust.Name=getCustomerName(newSales.Customer)" ng-required="true">
+                    <span>{{currentCust.Name}}</span>
+                    <span ng-show="submitted==true && salesForm.custId.$error.required">Enter ID</span>                    
+                    <span ng-show="submitted==true && !salesForm.custId.$error.required && !currentCust.Name ">Not Valid Id</span>
+                </div>
+            </div>
+                <div class="table-responsive">
+                    <table class= "table table-striped ">
+                        <thead>
+                            <tr>
+                                <th>Item Id</th>
+                                <th>Item Name</th>
+                                <th>MRP</th>
+                                <th>Price</th>
+                                <th>Quantity</th>
+                                <th>Total</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr >
+                                <td style ="word-break:break-all"><input id='sale-id' class="form-control" type=text ng-model="addSalesItem.Id" ng-keyup="setSalesItemDetails(addSalesItem.Id)" ng-keypress="setFocus('sale',$event)"><span ng-show="currentItem.Error==='id'">Enter item Id</span></td>
+                                <td ><input class="form-control"  type=text ng-model="addSalesItem.Name"></td>
+                                <td><input class="form-control" type=number ng-model="addSalesItem.MRP" disabled></td>
+                                <td><input class="form-control" type=number ng-model="addSalesItem.Price" ></td>
+                                <td><input id="sale-quantity"  class="form-control" type=number ng-model="addSalesItem.Quantity" ng-keypress="setSalesEnter(addSalesItem,$event)" ><div class="has-error"><span class="field-validation-error" ng-show="currentItem.Error==='stock'">{{currentItem.Stock}} stock available.</span><span class="field-validation-error" ng-show="currentItem.Error==='enterStock'">Please Enter Quantity.</span></div></td>
+                                <td><strong>{{addSalesItem.Price*addSalesItem.Quantity }}</strong></td>
+                                <td><a class="btn btn-primary" ng-click="addNewSaleItem(addSalesItem)"><span class="glyphicon glyphicon-plus"></span></a></td>
+                            </tr>
+                            <tr ng-repeat="item in newSales.Items track by $index">
+                                <td>{{item.Id}}</td>
+                                <td>{{getProductName(item.Id)}}</td>
+                                <td>{{getProductPrice(item.Id)}}</td>
+                                <td>{{item.Price}}</td>
+                                <td>{{item.Quantity}}</td>
+                                <td >{{item.Price*item.Quantity | currency:'&#8377;'}}</td>
+                                <td><a class="btn btn-danger" ng-click="removeItemNewSale($index)"><span class="glyphicon glyphicon-minus"></span></a></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td><strong>Total:</strong></td>
+                                <td><strong>{{getTotal("quantity",newSales.Items)}}</strong></td>
+                                <td><strong>{{getTotal("amount",newSales.Items) | currency:'&#8377;'}}</strong></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div> 
+                <div class="panel-body">
+                    <div class="form form-inline" >
+                        <input placeholder="Paid Amount" class="form-control" type="number" name="salePaidAmt" ng-model="newSales.PaymentAmount" max="{{getTotal('amount',newSales.Items)}}">
+                        <input placeholder="Discount Amount" class="form-control" type="number" ng-model="newSales.Discount">
+                        <a class="btn btn-primary" ng-click="submitted=true;currentCust.Name && salesForm.$valid && addSale(newSales)">ADD SALES</a>
+
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="panel panel-primary" ng-show="salesTab===2">
+            <div class="panel-heading"><h4>All Sales</h4></div>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Reciept No.</th>
+                        <th>Customer</th>
+                        <th>Discount</th>
+                        <th>Total Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="sale in sales track by $index">
+                        <td>{{sale.Date|date: 'dd-MMM-yyyy'}}</td>
+                        <td>{{sale.SalesNo}}</td>
+                        <td>{{getCustomerName(sale.Customer)}}</td>
+                        <td>{{sale.Discount|currency:'&#8377;'}}</td>
+                        <td>{{sale.TotalAmount-sale.Discount|currency:'&#8377;'}}</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td><h4>Total</h4></td>
+                        <td><h4>{{getTotalSalesPurchase("sales")|currency:'&#8377;'}}</h4></td>
+                    </tr>
+                    
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

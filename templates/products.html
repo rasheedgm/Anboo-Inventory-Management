@@ -1,0 +1,101 @@
+<h3 class="panel">Products</h3>
+<div class="row">
+    <div class="col-sm-2">
+        <ul ng-init="productsTab=2" class="nav nav-pills nav-stacked nav-primary">  
+            <li ng-class="{active:productsTab===2}"><a href="#" ng-click="productsTab=2">View Products</a></li>
+            <li ng-class="{active:productsTab===1}"><a href="#" ng-click="productsTab=1" >Add Products</a></li>            
+        </ul>                             
+    </div>
+    <div class="col-sm-10">
+        <div class="panel panel-primary" ng-show="productsTab===1">                          
+            <div class="panel-heading "><h4> New Products</h4>
+            </div>
+            <div class="panel-body">
+                <form class="form-horizontal" role="form" name="productform">
+                    <div class="form-group">
+                        <label class="control-label col-sm-2" for="product-id">Product Id:</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="product-id" placeholder="Product Id" ng-model="newProduct.Id" ng-keyup="checkProduct(newProduct.Id)" ng-required="true">
+                            <div ng-show="messageProdExist" class="alert alert-danger">
+                                <strong>Exists!</strong> Product already exist, Please give different id. <a href ng-click="editProduct(newProduct.Id)"> Click Here </a>to edit existing
+                            </div>                            
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-sm-2" for="product-name">Product Name:</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="product-name" placeholder="Product Name" ng-model="newProduct.Name" ng-disabled="messageProdExist">  
+                        </div>
+                    </div>
+                    <div class="form-group">  
+                        <label class="control-label col-sm-2" for="product-brand">Brand:</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="product-brand" placeholder="Brand" ng-model="newProduct.Brand" ng-disabled="messageProdExist">  
+                        </div>
+                    </div>
+                    <div class="form-group">  
+                        <label class="control-label col-sm-2" for="product-mrp">MRP:</label>
+                        <div class="col-sm-10">
+                            <input type="number" class="form-control" id="product-mrp" placeholder="MRP" ng-model="newProduct.MRP" ng-disabled="messageProdExist">  
+                        </div>
+                    </div>
+                    <div class="form-group">  
+                        <label class="control-label col-sm-2" for="product-cost">Cost:</label>
+                        <div class="col-sm-10">
+                            <input type="number" class="form-control" id="product-cost" placeholder="Cost" ng-model="newProduct.Cost" ng-disabled="messageProdExist">  
+                        </div>
+                    </div>
+                    <div class="form-group">  
+                        <label class="control-label col-sm-2" for="product-stock">Stock:</label>
+                        <div class="col-sm-10">
+                            <input type="number" class="form-control" id="product-stock" placeholder="Initial Stock" ng-model="newProduct.Stock" ng-disabled="messageProdExist">  
+                        </div>
+                    </div>
+                    <div class="form-group">  
+                        <div class="col-sm-offset-2 col-sm-10">
+                            <button class="btn btn-primary" ng-click="productform.$valid && addNewProduct()" ng-disabled="messageProdExist">ADD PRODUCT</button>
+                        </div>
+                    </div>
+                </form>
+            </div>   
+        </div>
+        <div class="panel panel-primary" ng-show="productsTab===2">
+            <div class="panel-heading"><h4>All Products</h4></div>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Product Id</th>
+                        <th>Product Name</th>
+                        <th>Brand</th>
+                        <th>MRP</th>
+                        <th>Cost</th>
+                        <th>Stock</th>
+                        <th>Stock Value</th>
+                    </tr>
+                    </thead>
+                <tbody>
+                    <tr ng-repeat="product in products track by $index">
+                        <td>{{product.Id}}</td>
+                        <td>{{product.Name}}</td>
+                        <td>{{product.Brand}}</td>
+                        <td>{{product.MRP}}</td>
+                        <td>{{product.Cost}}</td>
+                        <td>{{product.Stock}}</td>
+                        <td>{{product.Stock* product.Cost |currency:'&#8377;'}}</td>
+                    </tr>
+                    <tr>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th>Total</th>
+                        <th>{{getTotalStockValue() |currency:'&#8377;'}}</th>
+                    </tr>
+                
+                
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

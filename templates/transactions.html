@@ -1,0 +1,73 @@
+<h3 class="panel">Transactions</h3>
+<div class="row">
+    <div class="col-sm-3">
+        <ul ng-init="transactionsTab=1" class="nav nav-pills nav-stacked nav-primary">  
+            <li ng-class="{active:transactionsTab===1}"><a href="#" ng-click="transactionsTab=1" >Add Transactions</a></li>
+            <li ng-class="{active:transactionsTab===2}"><a href="#" ng-click="transactionsTab=2">View Transactions</a></li>                        
+        </ul>                             
+    </div>
+    <div class="col-sm-9">
+        <div class="panel panel-primary" ng-show="transactionsTab===1">                          
+            <div class="panel-heading "><h4> New Transactions</h4>
+            </div>
+            <div class="panel-body">
+                <form class="form-horizontal" role="form" name = "transForm">
+                    <div class="form-group">
+                        <label class="control-label col-sm-2" for="transaction-date">Date:</label>
+                        <div class="col-sm-3">
+                            <input type="date" class="form-control" id="transaction-date" ng-model="newTransaction.Date" >                                                      
+                        </div>
+                        <label class="control-label col-sm-3" for="transaction-account">Customer/Supplier Id:</label>
+                        <div class="col-sm-4">
+                            <input type="text" class="form-control" id="transaction-account" placeholder="Customer/Supplier Id" ng-model="newTransaction.AccountId" ng-required="true">  
+                        </div>
+                    </div>
+                    <div class="form-group">  
+                        <label class="control-label col-sm-5" for="transaction-given">Given Amount(Debit):</label>
+                        <div class="col-sm-3">
+                            <input type="number" class="form-control" id="transaction-given" placeholder="Debit" ng-model="newTransaction.Given" >  
+                        </div>
+                    </div>
+                    <div class="form-group">  
+                        <label class="control-label col-sm-5" for="transaction-received">Received Amount(Credit):</label>
+                        <div class="col-sm-3">
+                            <input type="number" class="form-control" id="transaction-received" placeholder="Credit" ng-model="newTransaction.Received" >  
+                        </div>
+                    </div>                    
+                    <div class="form-group">  
+                        <div class="col-sm-offset-5 col-sm-5">
+                            <button class="btn btn-primary" ng-click="transForm.$valid && addNewTransaction()" >ADD TRANSACTION</button>
+                        </div>
+                    </div>
+                </form>
+            </div>   
+        </div>
+        <div class="panel panel-primary" ng-show="transactionsTab===2">
+            <div class="panel-heading"><h4>All Transactions</h4></div>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Transaction Id</th>
+                        <th>Date</th>
+                        <th>Cust/Supplier</th>
+                        <th>Particulars</th>
+                        <th>Credit</th>
+                        <th>Debit</th>
+                    </tr>
+                    </thead>
+                <tbody>
+                    <tr ng-repeat="transaction in transactions track by $index">
+                        <td>{{transaction.Id}}</td>
+                        <td>{{transaction.Date | date:dd/MMM/yyyy}}</td>
+                        <td>{{transaction.AccountId}}</td>
+                        <td>{{transaction.Particulars}}</td>
+                        <td>{{transaction.Received}}</td>
+                        <td>{{transaction.Given}}</td>
+                    </tr>
+                
+                
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

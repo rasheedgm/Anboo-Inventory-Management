@@ -1,0 +1,114 @@
+<h3 class="panel">Suppliers</h3>
+<div class="row">
+    <div class="col-sm-2">
+        <ul ng-init="suppliersTab=2" class="nav nav-pills nav-stacked nav-primary">  
+            <li ng-class="{active:suppliersTab===2}"><a href="#" ng-click="suppliersTab=2">View Suppliers</a></li>
+            <li ng-class="{active:suppliersTab===1}"><a href="#" ng-click="suppliersTab=1" >Add Suppliers</a></li>
+            
+        </ul>                             
+    </div>
+    <div class="col-sm-10">
+        <div class="panel panel-primary" ng-show="suppliersTab===1">                          
+            <div class="panel-heading "><h4> New Suppliers</h4>
+            </div>
+            <div class="panel-body">
+                <form class="form-horizontal" role="form" name="supplierForm">
+                    <div class="form-group">
+                        <label class="control-label col-sm-3" for="supplier-id">Supplier Id:</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" id="supplier-id" placeholder="Supplier Id" ng-model="newSupplier.Id" ng-keyup="checkSupplier(newSupplier.Id)" ng-required="true">
+                            <div ng-show="messageSuppExist" class="alert alert-danger" >
+                                <strong>Exists!</strong> Supplier already exist, Please give different id. <a href ng-click="editSupplier(newSupplier.Id)"> Click Here </a>to edit existing
+                            </div>                            
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-sm-3" for="supplier-name">Name:</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" id="supplier-name" placeholder="Supplier Name" ng-model="newSupplier.Name" ng-disabled="messageSuppExist">  
+                        </div>
+                    </div>
+                    <div class="form-group">  
+                        <label class="control-label col-sm-3" for="supplier-line1">Address Line1:</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" id="supplier-line1" placeholder="Address Line1" ng-model="newSupplier.Address.Line1" ng-disabled="messageSuppExist">  
+                        </div>
+                    </div>
+                    <div class="form-group">  
+                        <label class="control-label col-sm-3" for="supplier-line2">Address Line2:</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" id="supplier-line2" placeholder="Address Line2" ng-model="newSupplier.Address.Line2" ng-disabled="messageSuppExist">  
+                        </div>
+                    </div>
+                    <div class="form-group">  
+                        <label class="control-label col-sm-3" for="supplier-place">Place/City:</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" id="supplier-place" placeholder="Place/City" ng-model="newSupplier.Address.Place" ng-disabled="messageSuppExist">  
+                        </div>
+                    </div>
+                    <div class="form-group">  
+                        <label class="control-label col-sm-3" for="supplier-pin">Pin:</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" id="supplier-pin" placeholder="Pin" ng-model="newSupplier.Address.Pin" ng-disabled="messageSuppExist">  
+                        </div>
+                    </div>
+                    <div class="form-group">  
+                        <label class="control-label col-sm-3" for="supplier-phone">Phone:</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" id="supplier-phone" placeholder="Phone" ng-model="newSupplier.Phone" ng-disabled="messageSuppExist">  
+                        </div>
+                    </div>
+                    <div class="form-group">  
+                        <label class="control-label col-sm-3" for="supplier-credit">Initial Credit:</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" id="supplier-credit" placeholder="Initial Credit" ng-model="newSupplier.InitialCredit" ng-disabled="messageSuppExist">  
+                        </div>
+                    </div>
+                    <div class="form-group">  
+                        <div class="col-sm-offset-3 col-sm-9">
+                            <button class="btn btn-primary" ng-click="supplierForm.$valid && addNewSupplier()" ng-disabled="messageSuppExist">ADD SUPPLIER</button>
+                        </div>
+                    </div>
+                </form>
+            </div>   
+        </div>
+        <div class="panel panel-primary" ng-show="suppliersTab===2">
+            <div class="panel-heading"><h4>All Suppliers</h4></div>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Supplier Id</th>
+                        <th>Supplier Name</th>
+                        <th>Place</th>
+                        <th>Phone</th>
+                        <th>Purchase</th>
+                        <th>Paid</th>
+                        <th>Credit</th>
+                    </tr>
+                    </thead>
+                <tbody>
+                    <tr ng-repeat="supplier in suppliers track by $index">
+                        <td>{{supplier.Id}}</td>
+                        <td>{{supplier.Name}}</td>
+                        <td>{{supplier.Address.Place}}</td>
+                        <td>{{supplier.Phone}}</td>                        
+                        <td>{{getTotalSuppPurchases(supplier.Id)|currency:'&#8377;'}}</td>                        
+                        <td>{{getTotalSuppPaid(supplier.Id)|currency:'&#8377;'}}</td>                        
+                        <td><strong>{{getBalanceSuppCredit(supplier.Id,supplier.InitialCredit)|currency:'&#8377;'}}</strong></td>
+                    </tr>
+                     <tr>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th><h4>Total</h4></th>
+                        <th><h4>{{getTotalSalesPurchase("purchases")|currency:'&#8377;'}}</h4></th>
+                        <th><h4>{{getTotalPaid("suppliers")|currency:'&#8377;'}}</h4></th>
+                        <th><h4>{{getTotalBalanceCredit("suppliers")|currency:'&#8377;'}}</h4></th>
+                    </tr>
+                
+                
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,112 @@
+<h3 class="panel">Purchases</h3>
+<div class="row">
+    <div class="col-sm-2">
+        <ul ng-init="purchasesTab=1" class="nav nav-pills nav-stacked">  
+            <li ng-class="{active:purchasesTab===1}"><a href="#" ng-click="purchasesTab=1" >Add Purchases</a></li>
+            <li ng-class="{active:purchasesTab===2}"><a href="#" ng-click="purchasesTab=2">View Purchases</a></li>
+        </ul>                             
+    </div>
+    <div class="col-sm-10">
+        <div class="panel panel-primary" ng-show="purchasesTab===1">                          
+            <div class="panel-heading "><h4> New Purchases</h4>
+            </div>
+            <form name="purchaseForm">
+            <div class="panel-body ">
+                <div class="form form-inline" >
+                    <label>Date:</label>
+                    <input type="date" ng-model="newPurchases.Date" id=date-input class="form-control">
+                    <label>Supplier Id:</label>
+                    <input type=text ng-model="newPurchases.Supplier" id="supplier-id" class="form-control" ng-required="true">
+                    <span>{{getSupplierName(newPurchases.Supplier)}}</span>
+                </div>
+            </div>
+                <div class="table-responsive">
+                    <table class= "table table-striped ">
+                        <thead>
+                            <tr>
+                                <th>Item Id</th>
+                                <th>Item Name</th>
+                                <th>MRP</th>
+                                <th>Cost</th>
+                                <th>Quantity</th>
+                                <th>Total</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr >
+                                <td style ="word-break:break-all"><input id='purchase-id' class="form-control" type=text ng-model="addPurchasesItem.Id" ng-keyup="setPurchasesItemDetails(addPurchasesItem.Id)" ng-keypress="setFocus('purchase',$event)"></td>
+                                <td ><input class="form-control"  type=text ng-model="addPurchasesItem.Name"></td>
+                                <td><input class="form-control" type=text ng-model="addPurchasesItem.MRP" disabled></td>
+                                <td><input class="form-control" type=text ng-model="addPurchasesItem.Cost" ></td>
+                                <td><input id="purchase-quantity"  class="form-control" type=number ng-model="addPurchasesItem.Quantity" ng-keypress="setPurchasesEnter(addPurchasesItem,$event)"></td>
+                                <td><strong>{{addPurchasesItem.Cost*addPurchasesItem.Quantity }}</strong></td>
+                                <td><button class="btn btn-primary" ng-click="addNewPurchaseItem(addPurchasesItem)"><span class="glyphicon glyphicon-plus"></span></button></td>
+                            </tr>
+                            <tr ng-repeat="item in newPurchases.Items track by $index">
+                                <td>{{item.Id}}</td>
+                                <td>{{getProductName(item.Id)}}</td>
+                                <td>{{getProductPrice(item.Id)}}</td>
+                                <td>{{item.Cost}}</td>
+                                <td>{{item.Quantity}}</td>
+                                <td >{{item.Cost*item.Quantity | currency:'&#8377;'}}</td>
+                                <td><button class="btn btn-danger" ng-click="removeItemNewPurchase($index)"><span class="glyphicon glyphicon-minus"></span></button></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td><strong>Total:</strong></td>
+                                <td><strong>{{getTotal("quantity",newPurchases.Items)}}</strong></td>
+                                <td><strong>{{getTotal("cost",newPurchases.Items) | currency:'&#8377;'}}</strong></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div> 
+                <div class="panel-body">
+                    <div class="form form-inline" >
+                        <input placeholder="Paid Amount" class="form-control" type="number" ng-model="newPurchases.PaymentAmount">
+                        <input placeholder="Discount Amount" class="form-control" type="number" ng-model="newPurchases.Discount">
+                        <button class="btn btn-primary" ng-click="purchaseForm.$valid && addPurchase(newPurchases)">ADD PURCHASE</button>
+
+                    </div>
+
+                </div>
+                </form>
+            
+        </div>
+        <div class="panel panel-primary" ng-show="purchasesTab===2">
+            <div class="panel-heading"><h4>All Purchases</h4></div>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Reciept No.</th>
+                        <th>Supplier</th>
+                        <th>Discount</th>
+                        <th>Total Amount</th>
+                    </tr>
+                    </thead>
+                <tbody>
+                    <tr ng-repeat="purchase in purchases track by $index">
+                        <td>{{purchase.Date|date: 'dd-MMM-yyyy'}}</td>
+                        <td>{{purchase.PurchasesNo}}</td>
+                        <td>{{getSupplierName(purchase.Supplier)}}</td>
+                        <td>{{purchase.Discount|currency:'&#8377;'}}</td>
+                        <td>{{purchase.TotalAmount-purchase.Discount|currency:'&#8377;'}}</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td><h4>Total</h4></td>
+                        <td><h4>{{getTotalSalesPurchase("purchases")|currency:'&#8377;'}}</h4></td>
+                    </tr>
+                
+                
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
