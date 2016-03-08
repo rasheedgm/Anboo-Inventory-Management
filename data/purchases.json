@@ -1,1 +1,1 @@
-{}
+{"PUR00001":{"PurchasesNo":"PUR00001","Supplier":"a1","Date":"2016-03-08T07:16:50.079Z","Items":[{"Id":"001","MPR":25,"Quantity":25,"Cost":20}],"Discount":null,"TotalAmount":500,"PaymentMethod":"Cash","PaymentAmount":500},"PUR00002":{"PurchasesNo":"PUR00002","Supplier":"c1","Date":"2016-03-08T07:26:00.508Z","Items":[],"Discount":"","TotalAmount":0,"PaymentMethod":"Cash","PaymentAmount":""}}

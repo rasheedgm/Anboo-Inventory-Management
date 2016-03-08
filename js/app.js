@@ -31,16 +31,34 @@ app.controller('appCtrl', function($scope, $http) {
         }
         return(total);
     }
-    $scope.getCustomerName = function(custId){
-        if($scope.customers[custId]){
-            return($scope.customers[custId].Name); 
+    $scope.getCustomerSupplierName = function(Id){
+        console.log(Id);
+        if(!Id || Id=="" || Id===undefined){
+            return("");
+        }else if($scope.customers[Id]){
+            return($scope.customers[Id].Name);             
+        }else if($scope.suppliers[Id]){
+            return($scope.suppliers[Id].Name); 
         }else{
             return("");
         }
     }
-    $scope.getSupplierName = function(supId){
-        if($scope.suppliers[supId]){
-            return($scope.suppliers[supId].Name); 
+    $scope.getSupplierName = function(Id){
+        console.log(Id);
+        if(!Id || Id=="" || Id===undefined){
+            return("");
+        }else if($scope.suppliers[Id]){
+            return($scope.suppliers[Id].Name); 
+        }else{
+            return("");
+        }
+    }
+    $scope.getCustomerName = function(Id){
+        console.log(Id);
+        if(!Id || Id=="" || Id===undefined){
+            return("");
+        }else if($scope.customers[Id]){
+            return($scope.customers[Id].Name);             
         }else{
             return("");
         }
@@ -432,6 +450,7 @@ app.controller('suppliersCtrl',function($scope,$http){
     
 });
 app.controller('transactionsCtrl',function($scope,$http){
+    $scope.CustSupp={};
     $scope.newTransaction={};
     $scope.newTransaction.Date = new Date();    
     $scope.addNewTransaction=function(){
