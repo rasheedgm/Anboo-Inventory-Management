@@ -41,7 +41,7 @@
                                 <td ><input class="form-control"  type=text ng-model="addSalesItem.Name"></td>
                                 <td><input class="form-control" type=number ng-model="addSalesItem.MRP" disabled></td>
                                 <td><input class="form-control" type=number ng-model="addSalesItem.Price" ></td>
-                                <td><input id="sale-quantity"  class="form-control" type=number ng-model="addSalesItem.Quantity" ng-keypress="setSalesEnter(addSalesItem,$event)" ><div class="has-error"><span class="field-validation-error" ng-show="currentItem.Error==='stock'">{{currentItem.Stock}} stock available.</span><span class="field-validation-error" ng-show="currentItem.Error==='enterStock'">Please Enter Quantity.</span></div></td>
+                                <td><input id="sale-quantity"  class="form-control" type=number ng-model="addSalesItem.Quantity" ng-keypress="setSalesEnter(addSalesItem,$event)" min="0"><div class="has-error"><span class="field-validation-error" ng-show="currentItem.Error==='stock'">{{currentItem.Stock}} stock available.</span><span class="field-validation-error" ng-show="currentItem.Error==='enterStock'">Please Enter Quantity.</span></div></td>
                                 <td><strong>{{addSalesItem.Price*addSalesItem.Quantity }}</strong></td>
                                 <td><a class="btn btn-primary" ng-click="addNewSaleItem(addSalesItem)"><span class="glyphicon glyphicon-plus"></span></a></td>
                             </tr>
@@ -68,11 +68,12 @@
                 </div> 
                 <div class="panel-body">
                     <div class="form form-inline" >
-                        <input placeholder="Paid Amount" class="form-control" type="number" name="salePaidAmt" ng-model="newSales.PaymentAmount" max="{{getTotal('amount',newSales.Items)}}">
+                        <input placeholder="Paid Amount" class="form-control" type="number" name="salePaidAmt" ng-model="newSales.PaymentAmount" max="{{getTotal('amount',newSales.Items)}}" min="0" ng-required="true">
                         <input placeholder="Discount Amount" class="form-control" type="number" ng-model="newSales.Discount">
                         <a class="btn btn-primary" ng-click="submitted=true;currentCust.Name && salesForm.$valid && addSale(newSales)">ADD SALES</a>
-
                     </div>
+                    <span ng-show="salesForm.salePaidAmt.$error.max">Amount is greater than Total</span>
+                    <span ng-show="submitted &&  salesForm.salePaidAmt.$error.required">Please Enter Paid Amount</span>
                 </div>
             </form>
         </div>

@@ -48,7 +48,7 @@ app.controller('appCtrl', function($scope, $http) {
         if(!Id || Id=="" || Id===undefined){
             return("");
         }else if($scope.suppliers[Id]){
-            return($scope.suppliers[Id].Name); 
+            return($scope.suppliers[Id].Name);            
         }else{
             return("");
         }
@@ -266,6 +266,7 @@ app.controller('salesCtrl', function($scope, $http){
             request.success(function(data){
                 $scope.newSales= emptySale();
                 $scope.currentCust.Name="";
+                $scope.submitted="";
                 $scope.newSales.Date=new Date();
                 alert(data);
             });
@@ -275,13 +276,22 @@ app.controller('salesCtrl', function($scope, $http){
 
 
 app.controller('purchasesCtrl', function($scope, $http){
+    $scope.currentSupp={};
+    $scope.currentItem={};
     $scope.newPurchases= emptyPurchase();
     $scope.newPurchases.Date=new Date();
     //add purchases item
     $scope.addNewPurchaseItem = function(addItem){
-        var flag=false;
+        var valid=true;
+        if(addItem.Id==""|| addItem.Id===undefined){
+            valid=false;
+            $scope.currentItem.Error="id";
+        }else if(addItem.Quantity==0){
+            valid=false;
+            $scope.currentItem.Error="enterStock";
+        }
         var item = {"Id": addItem.Id,"MPR": addItem.MRP, "Quantity": addItem.Quantity, "Cost": addItem.Cost}
-        if(flag==false){
+        if(valid==true){
             $scope.newPurchases.Items.push(item);
             $scope.addPurchasesItem.Id="";
             $scope.addPurchasesItem.MRP="";
@@ -327,21 +337,25 @@ app.controller('purchasesCtrl', function($scope, $http){
         for (var i=0; i<newPurchaseData.Items.length;i++){
             $scope.products[newPurchaseData.Items[i].Id].Stock=parseInt($scope.products[newPurchaseData.Items[i].Id].Stock)+ parseInt(newPurchaseData.Items[i].Quantity);            
         }
-        var tempNewTransaction={"Id" :newPurchaseData.PurchasesNo, "Date" :newPurchaseData.Date,"AccountId": newPurchaseData.Supplier,"Account": "suppliers", "Particulars": "Purchases","Given": newPurchaseData.PaymentAmount,"Received": "0","PaymentMode": newPurchaseData.PaymentMethod};
-        $scope.transactions[tempNewTransaction.Id]=tempNewTransaction;
-        var dataToSend={"sales": $scope.sales, "purchases": $scope.purchases,"customers": $scope.customers, "products": $scope.products,"suppliers": $scope.suppliers,"transactions": $scope.transactions};
-        var request = $http({
-            method: "post",
-            url: "update-json.php",
-            data: dataToSend,
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
-        });
-        request.success(function(data){
-            $scope.newPurchases= emptyPurchase();
-            $scope.currentCust.Name="";
-            $scope.newPurchases.Date=new Date();
-            alert(data);
-        });
+        if(newPurchaseData.Items.length==0){
+            alert("Please add items");
+        }else{
+            var tempNewTransaction={"Id" :newPurchaseData.PurchasesNo, "Date" :newPurchaseData.Date,"AccountId": newPurchaseData.Supplier,"Account": "suppliers", "Particulars": "Purchases","Given": newPurchaseData.PaymentAmount,"Received": "0","PaymentMode": newPurchaseData.PaymentMethod};
+            $scope.transactions[tempNewTransaction.Id]=tempNewTransaction;
+            var dataToSend={"sales": $scope.sales, "purchases": $scope.purchases,"customers": $scope.customers, "products": $scope.products,"suppliers": $scope.suppliers,"transactions": $scope.transactions};
+            var request = $http({
+                method: "post",
+                url: "update-json.php",
+                data: dataToSend,
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+            });
+            request.success(function(data){
+                $scope.newPurchases= emptyPurchase();
+                $scope.currentSupp.Name="";
+                $scope.newPurchases.Date=new Date();
+                alert(data);
+            });
+        }
     }
 });
 
@@ -473,10 +487,23 @@ app.controller('transactionsCtrl',function($scope,$http){
         });
         request.success(function(data){
             $scope.newTransaction={};
+            $scope.CustSupp.Name="";
             $scope.newTransaction.Date = new Date();
             alert(data);
         });
         
+    }
+    $scope.isCustSupp =function(id){
+        if(id==""){
+            //
+        }else if ($scope.suppliers[id]){
+            $scope.CustSupp.Customer=false;            
+            $scope.CustSupp.Supplier=true;
+        }
+        else if ($scope.customers[id]){
+            $scope.CustSupp.Customer=true;            
+            $scope.CustSupp.Supplier=false;
+        }
     }
     
 });

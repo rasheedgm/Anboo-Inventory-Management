@@ -16,8 +16,10 @@
                     <label>Date:</label>
                     <input type="date" ng-model="newPurchases.Date" id=date-input class="form-control">
                     <label>Supplier Id:</label>
-                    <input type=text ng-model="newPurchases.Supplier" id="supplier-id" class="form-control" ng-required="true">
-                    <span>{{getSupplierName(newPurchases.Supplier)}}</span>
+                    <input type=text name="suppId" ng-model="newPurchases.Supplier" id="supplier-id" class="form-control" ng-required="true" ng-keyup="currentSupp.Name=getSupplierName(newPurchases.Supplier)">
+                    <span>{{currentSupp.Name}}</span>
+                    <span ng-show="submitted==true && purchaseForm.suppId.$error.required">Enter ID</span>                    
+                    <span ng-show="submitted==true && !purchaseForm.suppId.$error.required && !currentSupp.Name ">Not Valid Id</span>
                 </div>
             </div>
                 <div class="table-responsive">
@@ -35,13 +37,16 @@
                         </thead>
                         <tbody>
                             <tr >
-                                <td style ="word-break:break-all"><input id='purchase-id' class="form-control" type=text ng-model="addPurchasesItem.Id" ng-keyup="setPurchasesItemDetails(addPurchasesItem.Id)" ng-keypress="setFocus('purchase',$event)"></td>
+                                <td style ="word-break:break-all"><input id='purchase-id' class="form-control" type=text ng-model="addPurchasesItem.Id" ng-keyup="setPurchasesItemDetails(addPurchasesItem.Id)" ng-keypress="setFocus('purchase',$event)"><span ng-show="currentItem.Error==='id'">Enter item Id</span></td>
                                 <td ><input class="form-control"  type=text ng-model="addPurchasesItem.Name"></td>
                                 <td><input class="form-control" type=text ng-model="addPurchasesItem.MRP" disabled></td>
                                 <td><input class="form-control" type=text ng-model="addPurchasesItem.Cost" ></td>
-                                <td><input id="purchase-quantity"  class="form-control" type=number ng-model="addPurchasesItem.Quantity" ng-keypress="setPurchasesEnter(addPurchasesItem,$event)"></td>
+                                <td>
+                                    <input id="purchase-quantity"  class="form-control" type=number ng-model="addPurchasesItem.Quantity" ng-keypress="setPurchasesEnter(addPurchasesItem,$event)" min="0">
+                                    <span class="field-validation-error" ng-show="currentItem.Error==='enterStock'">Please Enter Quantity.</span>
+                                </td>
                                 <td><strong>{{addPurchasesItem.Cost*addPurchasesItem.Quantity }}</strong></td>
-                                <td><button class="btn btn-primary" ng-click="addNewPurchaseItem(addPurchasesItem)"><span class="glyphicon glyphicon-plus"></span></button></td>
+                                <td><a class="btn btn-primary" ng-click="addNewPurchaseItem(addPurchasesItem)"><span class="glyphicon glyphicon-plus"></span></a></td>
                             </tr>
                             <tr ng-repeat="item in newPurchases.Items track by $index">
                                 <td>{{item.Id}}</td>
@@ -50,7 +55,7 @@
                                 <td>{{item.Cost}}</td>
                                 <td>{{item.Quantity}}</td>
                                 <td >{{item.Cost*item.Quantity | currency:'&#8377;'}}</td>
-                                <td><button class="btn btn-danger" ng-click="removeItemNewPurchase($index)"><span class="glyphicon glyphicon-minus"></span></button></td>
+                                <td><a class="btn btn-danger" ng-click="removeItemNewPurchase($index)"><span class="glyphicon glyphicon-minus"></span></a></td>
                             </tr>
                             <tr>
                                 <td></td>
@@ -66,11 +71,13 @@
                 </div> 
                 <div class="panel-body">
                     <div class="form form-inline" >
-                        <input placeholder="Paid Amount" class="form-control" type="number" ng-model="newPurchases.PaymentAmount">
+                        <input placeholder="Paid Amount" class="form-control" name="purchasePaidAmt" type="number" ng-model="newPurchases.PaymentAmount" max="{{getTotal('amount',newPurchases.Items)}}" min="0" ng-required="true"ng-required="true">
                         <input placeholder="Discount Amount" class="form-control" type="number" ng-model="newPurchases.Discount">
-                        <button class="btn btn-primary" ng-click="purchaseForm.$valid && addPurchase(newPurchases)">ADD PURCHASE</button>
+                        <a class="btn btn-primary" ng-click="submitted=true;currentSupp.Name && purchaseForm.$valid && addPurchase(newPurchases)">ADD PURCHASE</a>
 
                     </div>
+                    <span ng-show="purchaseForm.purchasePaidAmt.$error.max">Amount is greater than Total</span>
+                    <span ng-show="submitted && purchaseForm.purchasePaidAmt.$error.required">Please Enter Paid Amount</span>
 
                 </div>
                 </form>
